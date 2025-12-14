@@ -1,6 +1,16 @@
+"use client";
+
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { Button } from "./ui/button";
 
 const Header = () => {
   return (
@@ -21,6 +31,18 @@ const Header = () => {
           </Link>
           {/* Search & Location */}
           {/* Right side actions */}
+          <div className="flex items-center">
+            <SignedOut>
+              <SignedIn />
+              <SignInButton mode="modal">
+                <Button size="sm">Sign In</Button>
+              </SignInButton>
+            </SignedOut>
+
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+          </div>
         </div>
         {/* Mobile Search location */}
       </nav>
