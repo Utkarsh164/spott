@@ -11,11 +11,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`bg-linear-to-br from-gray-950 via-zinc-600 to-stone-600 text-white`}
+        className={`bg-linear-to-br from-gray-950 via-zinc-900 to-stone-900 text-white`}
       >
-        <ThemeProvider
+         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
