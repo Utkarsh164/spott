@@ -2,15 +2,15 @@
 
 import {
   SignedIn,
-  SignedOut,
   SignInButton,
-  SignUpButton,
   UserButton,
 } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { Button } from "./ui/button";
+import { Authenticated, Unauthenticated } from "convex/react";
+import { BarLoader } from "react-spinners";
 
 const Header = () => {
   return (
@@ -32,19 +32,22 @@ const Header = () => {
           {/* Search & Location */}
           {/* Right side actions */}
           <div className="flex items-center">
-            <SignedOut>
-              <SignedIn />
+             <Authenticated>
+              <UserButton />
+            </Authenticated>
+
+            <Unauthenticated>
               <SignInButton mode="modal">
                 <Button size="sm">Sign In</Button>
               </SignInButton>
-            </SignedOut>
-
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
+            </Unauthenticated>
           </div>
         </div>
         {/* Mobile Search location */}
+        {/* Loader */}
+        <div className="absolute bottom-0 left-0 w-full">
+          <BarLoader width="100%" color="#A855F7" />
+        </div>
       </nav>
       {/* Modals */}
     </>
