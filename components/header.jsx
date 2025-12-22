@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  SignedIn,
-  SignInButton,
-  UserButton,
-} from "@clerk/nextjs";
+import {SignInButton, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -32,7 +28,7 @@ const Header = () => {
           {/* Search & Location */}
           {/* Right side actions */}
           <div className="flex items-center">
-             <Authenticated>
+            <Authenticated>
               <UserButton />
             </Authenticated>
 
