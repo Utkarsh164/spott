@@ -30,7 +30,7 @@ export default function RootLayout({ children }) {
                   <div className="absolute bottom-0 left-1/32 w-96 h-96 bg-red-600/20 rounded-full blur-3xl" />
                   <div className="absolute top-0 left-1/4 w-96 h-96 bg-pink-600/20 rounded-full blur-3xl" />
                   <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-orange-600/20 rounded-full blur-3xl" />
-                  <div className="absolute top-0 right-1/32 w-96 h-96 bg-green-600/20 rounded-full blur-3xl" />
+                  <div className="absolute top-0 right-1/32 w-96 h-96 bg-violet-600/20 rounded-full blur-3xl" />
                 </div>
                 <div className="relative z-10 min-h-[70vh]">{children}</div>
                 <footer className="border-t border-gray-800/50 py-8 px-6 max-w-7xl mx-auto">
