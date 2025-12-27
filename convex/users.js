@@ -34,6 +34,8 @@ export const store = mutation({
       imageUrl: identity.pictureUrl,
       hasCompletedOnBoarding: false,
       freeEventsCreated: 0,
+      createdAt:Date.now(),
+      updatedAt:Date.now(),
     });
   },
 });
