@@ -14,7 +14,7 @@ const ExplorePage = () => {
     api.explore.getEventsByLocations,
     {
       city: currentUser?.location?.city || "Gurugram",
-      state: currentUser?.location.state || "Haryana",
+      state: currentUser?.location?.state || "Haryana",
       limit: 4,
     }
   );
@@ -23,12 +23,21 @@ const ExplorePage = () => {
     api.explore.getPopularEvents,
     { limit: 6 }
   );
-  console.log(data);
   return (
     <>
-      <div>
+      <div className="pb-12 text-center">
         <h1 className="text-5xl md:text-6xl font-bold mb-4">Discover Events</h1>
+        <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+          Explore featured events, find what&apos;s happening locally, or browse
+          events across India
+        </p>
       </div>
+
+      {featuredEvents && featuredEvents.length > 0 && (
+        <div className="mb-16">
+          
+        </div>
+      )}
     </>
   );
 };
