@@ -47,7 +47,7 @@ export const getCurrentUser = query({
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
-      return nil;
+      return null;
     }
 
     const user = await ctx.db
