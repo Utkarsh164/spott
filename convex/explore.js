@@ -97,6 +97,6 @@ export const getCategoryCount = query({
     events.forEach((event) => {
       counts[event.category] = (counts[event.category] || 0) + 1;
     });
-    return counts
+    return counts;
   },
 });
