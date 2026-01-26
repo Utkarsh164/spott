@@ -19,6 +19,7 @@ import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import EventCard from "@/components/event-card";
 import { CATEGORIES } from "@/lib/data";
+import { createLocationSlug } from "@/lib/location-utils";
 
 const ExplorePage = () => {
   const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
@@ -54,7 +55,7 @@ const ExplorePage = () => {
   };
 
   const handleCategoryClick = (categoryId) => {
-    router.push(`/events/${categoryId}`);
+    router.push(`/explore/${categoryId}`);
   };
 
   const handleViewLocalEvents = () => {
