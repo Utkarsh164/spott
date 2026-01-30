@@ -1,4 +1,6 @@
+import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { internal } from "./_generated/api";
 
 export const store = mutation({
   args: {},
@@ -16,7 +18,7 @@ export const store = mutation({
     const user = await ctx.db
       .query("users")
       .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier)
+        q.eq("tokenIdentifier", identity.tokenIdentifier),
       )
       .unique();
     if (user !== null) {
@@ -53,7 +55,7 @@ export const getCurrentUser = query({
     const user = await ctx.db
       .query("users")
       .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier)
+        q.eq("tokenIdentifier", identity.tokenIdentifier),
       )
       .unique();
 
@@ -62,5 +64,26 @@ export const getCurrentUser = query({
     }
 
     return user;
+  },
+});
+
+export const completeOnBoarding = mutation({
+  args: {
+    location: v.object({
+      city: v.string(),
+      state: v.optional(v.string()),
+      country: v.string(),
+    }),
+    interests: v.array(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.runQuery(internal.user.getCurrentUser);
+    await ctx.db.patch(user._id, {
+      location: args.location,
+      interests: args.interests,
+      hasCompletedOnBoarding: true,
+      updatedAt: Date.now(),
+    });
+    return user._id;
   },
 });

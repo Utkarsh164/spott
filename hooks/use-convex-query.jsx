@@ -33,7 +33,7 @@ export const useConvexQuery = (query, ...args) => {
 export const useConvexMutation = (mutation) => {
   const mutationFn = useMutation(mutation);
   const [data, setData] = useState(undefined);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const mutate = async (...args) => {
@@ -42,7 +42,7 @@ export const useConvexMutation = (mutation) => {
 
     try {
       const response = await mutationFn(...args);
-      setData(result);
+      setData(response);
       setError(null);
     } catch (err) {
       setError(err);
