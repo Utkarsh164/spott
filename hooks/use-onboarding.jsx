@@ -1,23 +1,23 @@
 "use client";
 import { api } from "@/convex/_generated/api";
-import { useConvex } from "convex/react";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useConvexQuery } from "./use-convex-query";
 
-const ATTENDEE_PAGES = ["/explore", "/events", "/my-tickets"];
+const ATTENDEE_PAGES = ["/explore", "/events", "/my-tickets","/profile"];
 export function useOnboarding() {
-  const [showOnboarding, setShowOnboarding] = useState(true);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const { data: currentUser, isLoading } = useConvex(api.users.getCurrentUser);
-  useState(() => {
+  const { data: currentUser, isLoading } = useConvexQuery(api.users.getCurrentUser);
+  useEffect(() => {
     if (isLoading || !currentUser) return;
 
     if (!currentUser.hasCompletedOnBoarding) {
-      const requiresOnboaring = ATTENDEE_PAGES.some((page) =>
+      const requiresOnboarding = ATTENDEE_PAGES.some((page) =>
         pathname.startsWith(page),
       );
-      if (requiresOnboaring) {
+      if (requiresOnboarding) {
         setShowOnboarding(true);
       }
     }

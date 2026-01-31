@@ -39,7 +39,7 @@ const OnboardingModal = ({ isOpen, onClose, onComplete }) => {
     api.users.completeOnBoarding,
   );
 
-  const indianStates = State.getStatesOfCountry("IN");
+  const indianStates = useMemo(()=>State.getStatesOfCountry("IN"),[]);
 
   const cities = useMemo(() => {
     if (!location.state) return [];
@@ -149,7 +149,7 @@ const OnboardingModal = ({ isOpen, onClose, onComplete }) => {
                 {selectedInterests.length > 0 && (
                   <div className="flex items-center gap-2">
                     <Badge>{selectedInterests.length} selected</Badge>
-                    {selectedInterests.length > 3 && (
+                    {selectedInterests.length > 2 && (
                       <div className="text-sm text-green-500">
                         ✓ Ready to continue
                       </div>
