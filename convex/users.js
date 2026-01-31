@@ -77,7 +77,7 @@ export const completeOnBoarding = mutation({
     interests: v.array(v.string()),
   },
   handler: async (ctx, args) => {
-    const user = await ctx.runQuery(internal.user.getCurrentUser);
+    const user = await ctx.runQuery(internal.users.getCurrentUser);
     await ctx.db.patch(user._id, {
       location: args.location,
       interests: args.interests,

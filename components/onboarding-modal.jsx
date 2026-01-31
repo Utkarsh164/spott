@@ -10,12 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
 import { Progress } from "./ui/progress";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Heart,
-  MapPin,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, Heart, MapPin } from "lucide-react";
 import { CATEGORIES } from "@/lib/data";
 import { Badge } from "./ui/badge";
 import { useConvexMutation } from "@/hooks/use-convex-query";
@@ -73,7 +68,23 @@ const OnboardingModal = ({ isOpen, onClose, onComplete }) => {
     );
   };
 
-  const handleComplete = async () => {};
+  const handleComplete = async () => {
+    try {
+      await completeOnBoarding({
+        location: {
+          city: location.city,
+          state: location.state,
+          country: location.country,
+        },
+        interests: selectedInterests,
+      });
+      toast.success("Welcome to spott!");
+      onComplete();
+    } catch (error) {
+      toast.error("Failed to complete onboarding");
+      console.log(error);
+    }
+  };
   const handleNext = () => {
     if (step === 1 && selectedInterests.length < 3) {
       toast.error("Please select at least 3 interests");
