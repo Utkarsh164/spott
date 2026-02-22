@@ -11,6 +11,9 @@ import { City, State } from "country-state-city";
 import UpgradeModal from "@/components/upgrade-modal";
 import Image from "next/image";
 import { UnsplashImagePicker } from "@/components/unsplash-image-picker";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Crown, Sparkle, Sparkles } from "lucide-react";
 
 const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
@@ -91,8 +94,16 @@ const CreateEvents = () => {
 
   const colorPresets = [
     "#ec4899",
-    ...(hasPro ? ["#4c1d95", "#065f46", "##92400e", "#7f1d1d", "#831843"] : []),
+    ...(hasPro ? ["#4c1d95", "#065f46", "#92400e", "#7f1d1d", "#831843"] : []),
   ];
+  const handleColorClick = (color) => {
+    if (color !== "#ec4899" && !hasPro) {
+      setUpgradeReason("color");
+      setShowUpgradeModal(true);
+      return;
+    }
+    setValue("themeColor", color);
+  };
   return (
     <div
       style={{ backgroundColor: themeColor }}
@@ -129,6 +140,54 @@ const CreateEvents = () => {
               <span>Click to add cover image</span>
             )}
           </div>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label className={"text-sm"}>Theme Color</Label>
+              {!hasPro && (
+                <Badge variant={"secondary"} className={"text-xs gap-1"}>
+                  <Crown className="w-3 h-3" /> Pro
+                </Badge>
+              )}
+            </div>
+            <div className="flex gap-2 flex-wrap">
+              {colorPresets.map((color) => (
+                <button
+                  key={color}
+                  type="button"
+                  className={`w-10 h-10 rounded-full border-2 transition-all ${
+                    !hasPro && color !== "#ec4899"
+                      ? "opacity-40 cursor-not-allowed"
+                      : "hover:scale-110"
+                  }`}
+                  style={{
+                    background: color,
+                    borderColor: themeColor === color ? "white" : "transparent",
+                  }}
+                  onClick={() => handleColorClick(color)}
+                  title={
+                    !hasPro && color !== "#ec4899"
+                      ? "Upgrade to pro for custom colors"
+                      : ""
+                  }
+                />
+              ))}
+
+              {!hasPro && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setUpgradeReason(color);
+                    setShowUpgradeModal(true);
+                  }}
+                  className="w-10 h-10 rounded-full border-2 border-dashed border-purple-300 flex
+                  items-center justify-center hover:border-purple-500 transition-colors"
+                  title="Unlock more colors with pro"
+                >
+                  <Sparkle className="w-5 h-5 text-purple-400" />
+                </button>
+              )}
+            </div>
+          </div>
         </div>
         {/* RIGHT */}
         <div>Right</div>
@@ -138,8 +197,8 @@ const CreateEvents = () => {
         <UnsplashImagePicker
           isOpen={showImagePicker}
           onClose={() => setShowImagePicker(false)}
-          onSelect={(url)=>{
-            setValue("coverImage",url)
+          onSelect={(url) => {
+            setValue("coverImage", url);
           }}
         />
       )}
