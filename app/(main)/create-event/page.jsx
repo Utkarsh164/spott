@@ -4,7 +4,7 @@ import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import z from "zod";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@/convex/_generated/api";
 import { City, State } from "country-state-city";
@@ -13,7 +13,20 @@ import Image from "next/image";
 import { UnsplashImagePicker } from "@/components/unsplash-image-picker";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Crown, Sparkle, Sparkles } from "lucide-react";
+import { CalendarIcon, Crown, Sparkle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverDescription,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
 
 const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
@@ -39,7 +52,7 @@ const eventSchema = z.object({
   ticketType: z.enum(["free", "paid"]).default("free"),
   ticketPrice: z.number().optional(),
   coverImage: z.string().optional(),
-  themeColor: z.string().default("#ec4899"),
+  themeColor: z.string().default("#1c1c1c"),
 });
 
 const CreateEvents = () => {
@@ -61,14 +74,14 @@ const CreateEvents = () => {
     handleSubmit,
     watch,
     setValue,
-    formState: { error },
+    formState: { errors },
   } = useForm({
     resolver: zodResolver(eventSchema),
     defaultValues: {
       locationType: "physical",
       ticketType: "free",
       capacity: 50,
-      themeColor: "#ec4899",
+      themeColor: "#1c1c1c",
       category: "",
       state: "",
       city: "",
@@ -77,10 +90,16 @@ const CreateEvents = () => {
     },
   });
 
+  const onSubmit = () => {
+    console.log("Got Submit");
+  };
+
   const themeColor = watch("themeColor");
   const ticketType = watch("ticketType");
   const selectedState = watch("state");
   const coverImage = watch("coverImage");
+  const startDate = watch("startDate");
+  const endDate = watch("endDate");
 
   const indianStates = useMemo(() => State.getStatesOfCountry("IN"), []);
 
@@ -93,11 +112,11 @@ const CreateEvents = () => {
   }, [selectedState, indianStates]);
 
   const colorPresets = [
-    "#ec4899",
-    ...(hasPro ? ["#4c1d95", "#065f46", "#92400e", "#7f1d1d", "#831843"] : []),
+    "#1c1c1c",
+    ...(hasPro ? ["#2e1065", "#064e3b", "#3b0764", "#5f1111", "#701a33"] : []),
   ];
   const handleColorClick = (color) => {
-    if (color !== "#ec4899" && !hasPro) {
+    if (color !== "#1c1c1c" && !hasPro) {
       setUpgradeReason("color");
       setShowUpgradeModal(true);
       return;
@@ -123,7 +142,7 @@ const CreateEvents = () => {
 
       <div className="max-w-6xl mx-auto grid md:grid-cols-[320px_1fr] gap-10">
         {/* LEFT */}
-        <div className="apancw-y-6">
+        <div className="space-y-6">
           <div
             className="aspect-square w-full rounded-xl overflow-hidden flex items-center justify-center cursor-pointer border border-2"
             onClick={() => setShowImagePicker(true)}
@@ -155,7 +174,7 @@ const CreateEvents = () => {
                   key={color}
                   type="button"
                   className={`w-10 h-10 rounded-full border-2 transition-all ${
-                    !hasPro && color !== "#ec4899"
+                    !hasPro && color !== "#1c1c1c"
                       ? "opacity-40 cursor-not-allowed"
                       : "hover:scale-110"
                   }`}
@@ -165,7 +184,7 @@ const CreateEvents = () => {
                   }}
                   onClick={() => handleColorClick(color)}
                   title={
-                    !hasPro && color !== "#ec4899"
+                    !hasPro && color !== "#1c1c1c"
                       ? "Upgrade to pro for custom colors"
                       : ""
                   }
@@ -176,7 +195,7 @@ const CreateEvents = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    setUpgradeReason(color);
+                    setUpgradeReason("color");
                     setShowUpgradeModal(true);
                   }}
                   className="w-10 h-10 rounded-full border-2 border-dashed border-purple-300 flex
@@ -190,7 +209,63 @@ const CreateEvents = () => {
           </div>
         </div>
         {/* RIGHT */}
-        <div>Right</div>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+          <div>
+            <Input
+              {...register("title")}
+              placeholder="Event Name"
+              className={
+                "text-3xl font-semibold bg-transparent border-none focus-visible:ring-0"
+              }
+            />
+            {errors.title && (
+              <p className="text-sm text-red-400 mt-1">
+                {errors.title.message}
+              </p>
+            )}
+          </div>
+          <div className="grid grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label className={"text-sm"}>Start</Label>
+              <div>
+                {/* <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-between"
+                      onClick={() => {
+                        console.log("it got clicked");
+                      }}
+                    >
+                      {startDate ? format(startDate, "PPP") : "Pick date"}
+                      <CalendarIcon className="w-4 h-4 opacity-60" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="p-0">
+                    <Calendar
+                      mode="single"
+                      selected={startDate}
+                      onSelect={(date) => setValue("startDate", date)}
+                    />
+                  </PopoverContent>
+                </Popover> */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline">Open Popover</Button>
+                  </PopoverTrigger>
+                  <PopoverContent>
+                    <PopoverHeader>
+                      <PopoverTitle>Title</PopoverTitle>
+                      <PopoverDescription>
+                        Description text here.
+                      </PopoverDescription>
+                    </PopoverHeader>
+                  </PopoverContent>
+                </Popover>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
 
       {showImagePicker && (
