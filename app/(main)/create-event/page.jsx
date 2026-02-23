@@ -133,26 +133,26 @@ const CreateEvents = () => {
         setShowUpgradeModal(true);
         return;
       }
-      // await createEvent({
-      //   title: data.title,
-      //   description: data.description,
-      //   category: data.category,
-      //   tags: [data.category],
-      //   startDate: start.getTime(),
-      //   endTime: end.getTime(),
-      //   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      //   location: data.locationType,
-      //   venue: data.venue || undefined,
-      //   address: data.address || undefined,
-      //   city: data.city,
-      //   state: data.state || undefined,
-      //   country: "India",
-      //   capacity: data.capacity,
-      //   ticketType: data.ticketType,
-      //   ticketPrice: data.ticketPrice || undefined,
-      //   coverImage: data.coverImage || undefined,
-      //   themeColor: data.themeColor,
-      // });
+      await createEvent({
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        tags: [data.category],
+        startDate: start.getTime(),
+        endTime: end.getTime(),
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        location: data.locationType,
+        venue: data.venue || undefined,
+        address: data.address || undefined,
+        city: data.city,
+        state: data.state || undefined,
+        country: "India",
+        capacity: data.capacity,
+        ticketType: data.ticketType,
+        ticketPrice: data.ticketPrice || undefined,
+        coverImage: data.coverImage || undefined,
+        themeColor: data.themeColor,
+      });
       toast.success("Event create successfully!");
       router.push("/my-events");
     } catch (error) {
