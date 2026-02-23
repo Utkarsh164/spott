@@ -21,9 +21,6 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  PopoverHeader,
-  PopoverTitle,
-  PopoverDescription,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
@@ -228,7 +225,7 @@ const CreateEvents = () => {
             <div className="space-y-2">
               <Label className={"text-sm"}>Start</Label>
               <div>
-                {/* <Popover>
+                <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
@@ -247,19 +244,6 @@ const CreateEvents = () => {
                       selected={startDate}
                       onSelect={(date) => setValue("startDate", date)}
                     />
-                  </PopoverContent>
-                </Popover> */}
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline">Open Popover</Button>
-                  </PopoverTrigger>
-                  <PopoverContent>
-                    <PopoverHeader>
-                      <PopoverTitle>Title</PopoverTitle>
-                      <PopoverDescription>
-                        Description text here.
-                      </PopoverDescription>
-                    </PopoverHeader>
                   </PopoverContent>
                 </Popover>
               </div>
