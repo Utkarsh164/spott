@@ -1,6 +1,8 @@
+"use client"
+
 import * as React from "react"
-import { cva } from "class-variance-authority"
 import { Slot } from "@radix-ui/react-slot"
+import { cva } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
