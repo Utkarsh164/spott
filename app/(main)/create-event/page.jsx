@@ -73,7 +73,7 @@ const CreateEvents = () => {
   const hasPro = has?.({ plan: "pro" });
   const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
   const { mutate: createEvent, isLoading } = useConvexMutation(
-    api.events.createEvent,
+    api.events.createEvents,
   );
 
   const {
@@ -109,7 +109,7 @@ const CreateEvents = () => {
   };
   const onSubmit = async (data) => {
     console.log(data);
-    
+
     try {
       const start = combinedDateTime(data.startDate, data.startTime);
       const end = combinedDateTime(data.endDate, data.endTime);
@@ -139,9 +139,9 @@ const CreateEvents = () => {
         category: data.category,
         tags: [data.category],
         startDate: start.getTime(),
-        endTime: end.getTime(),
+        endDate: end.getTime(),
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        location: data.locationType,
+        locationType: data.locationType,
         venue: data.venue || undefined,
         address: data.address || undefined,
         city: data.city,
@@ -241,9 +241,9 @@ const CreateEvents = () => {
                   type="button"
                   className={`w-10 h-10 rounded-full border-2 transition-all ${
                     !hasPro && color !== "#1c1c1c"
-                      ? "opacity-40 cursor-not-allowed"
-                      : "hover:scale-110"
-                  }`}
+                    ? "opacity-40 cursor-not-allowed"
+                    : "hover:scale-110"
+                    }`}
                   style={{
                     background: color,
                     borderColor: themeColor === color ? "white" : "transparent",
@@ -470,8 +470,9 @@ const CreateEvents = () => {
             <Label>Description</Label>
             <Textarea
               {...register("description")}
-              placeholder="Tell people about yout event..."
+              placeholder="Tell people about your event..."
               rows={4}
+              className="resize-none wrap-break-word w-full"
             />
             {errors.description && (
               <p className="text-sm text-red-400">
@@ -524,7 +525,6 @@ const CreateEvents = () => {
           <Button
             type="Submit"
             disabled={isLoading}
-          
             className="w-full py-6 text-lg rounded-lg"
           >
             {isLoading ? (

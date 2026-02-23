@@ -35,7 +35,7 @@ export const createEvents = mutation({
           "Free event limit reached. Please upgrade to Pro to create more events.",
         );
       }
-      const defaultColor = "#1e3a8a";
+      const defaultColor = "#1c1c1c";
       if (!args.hasPro && args.themeColor && args.themeColor !== defaultColor) {
         throw new Error(
           "Custom theme colors is a Pro feature. Please upgrade to Pro.",
