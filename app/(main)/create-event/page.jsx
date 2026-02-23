@@ -1,29 +1,39 @@
 "use client";
-import { useConvexMutation, useConvexQuery } from "@/hooks/use-convex-query";
-import { useAuth } from "@clerk/nextjs";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import React, { useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { useForm, Controller, Form } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { format } from "date-fns";
+import { State, City } from "country-state-city";
+import { CalendarIcon, Crown, Loader2, Sparkle, Sparkles } from "lucide-react";
+import { useConvexMutation, useConvexQuery } from "@/hooks/use-convex-query";
 import { api } from "@/convex/_generated/api";
-import { City, State } from "country-state-city";
-import UpgradeModal from "@/components/upgrade-modal";
-import Image from "next/image";
-import { UnsplashImagePicker } from "@/components/unsplash-image-picker";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { CalendarIcon, Crown, Sparkle } from "lucide-react";
+import { toast } from "sonner";
+import { useAuth } from "@clerk/nextjs";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import UpgradeModal from "@/components/upgrade-modal";
+import { CATEGORIES } from "@/lib/data";
+import { UnsplashImagePicker } from "@/components/unsplash-image-picker";
+import Image from "next/image";
 
 const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
@@ -32,14 +42,14 @@ const eventSchema = z.object({
   description: z
     .string()
     .min(20, "Description must be at least 20 characters longs"),
-  category: z.string().min(1, "Category must be at least 3 characters long"),
+  category: z.string().min(1, "Please select a category"),
 
   startDate: z.date({ required_error: "Start date is required" }),
   endDate: z.date({ required_error: "End date is required" }),
   startTime: z.string().regex(timeRegex, "Start tiem must be HH:MM"),
   endTime: z.string().regex(timeRegex, "End tiem must be HH:MM"),
 
-  locationType: z.enum(["physical", "online"]).default("physical"),
+  locationType: z.enum(["physical", "online"]).default("physical").optional(),
   venue: z.string().url("Must be a valid URL").optional().or(z.literal("")),
   address: z.string().optional(),
   city: z.string().min(1, "City is required"),
@@ -71,10 +81,13 @@ const CreateEvents = () => {
     handleSubmit,
     watch,
     setValue,
+    control,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(eventSchema),
     defaultValues: {
+      title: "",
+      description: "",
       locationType: "physical",
       ticketType: "free",
       capacity: 50,
@@ -87,8 +100,64 @@ const CreateEvents = () => {
     },
   });
 
-  const onSubmit = () => {
-    console.log("Got Submit");
+  const combinedDateTime = (date, time) => {
+    if (!date || !time) return null;
+    const [hh, mm] = time.split(":").map(Number);
+    const d = new Date(date);
+    d.setHours(hh, mm, 0, 0);
+    return d;
+  };
+  const onSubmit = async (data) => {
+    console.log(data);
+    
+    try {
+      const start = combinedDateTime(data.startDate, data.startTime);
+      const end = combinedDateTime(data.endDate, data.endTime);
+      if (!start || !end) {
+        toast.error("Please select both date and time for start and end.");
+        return;
+      }
+      if (end.getTime() <= start.getTime()) {
+        toast.message("End date/time must be after start date/time");
+        return;
+      }
+
+      if (currentUser?.freeEventsCreated >= 1) {
+        setUpgradeReason("limit");
+        setShowUpgradeModal(true);
+        return;
+      }
+
+      if (data.themeColor !== "#1c1c1c") {
+        setUpgradeReason("color");
+        setShowUpgradeModal(true);
+        return;
+      }
+      // await createEvent({
+      //   title: data.title,
+      //   description: data.description,
+      //   category: data.category,
+      //   tags: [data.category],
+      //   startDate: start.getTime(),
+      //   endTime: end.getTime(),
+      //   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      //   location: data.locationType,
+      //   venue: data.venue || undefined,
+      //   address: data.address || undefined,
+      //   city: data.city,
+      //   state: data.state || undefined,
+      //   country: "India",
+      //   capacity: data.capacity,
+      //   ticketType: data.ticketType,
+      //   ticketPrice: data.ticketPrice || undefined,
+      //   coverImage: data.coverImage || undefined,
+      //   themeColor: data.themeColor,
+      // });
+      toast.success("Event create successfully!");
+      router.push("/my-events");
+    } catch (error) {
+      toast.error(error.message || "Failed to create events");
+    }
   };
 
   const themeColor = watch("themeColor");
@@ -221,18 +290,16 @@ const CreateEvents = () => {
               </p>
             )}
           </div>
+
           <div className="grid grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label className={"text-sm"}>Start</Label>
-              <div>
+              <div className="grid grid-cols-[1fr_auto] gap-2">
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
                       className="w-full justify-between"
-                      onClick={() => {
-                        console.log("it got clicked");
-                      }}
                     >
                       {startDate ? format(startDate, "PPP") : "Pick date"}
                       <CalendarIcon className="w-4 h-4 opacity-60" />
@@ -243,12 +310,231 @@ const CreateEvents = () => {
                       mode="single"
                       selected={startDate}
                       onSelect={(date) => setValue("startDate", date)}
+                      disabled={(date) => date < new Date()}
                     />
                   </PopoverContent>
                 </Popover>
+                <Input
+                  type={"time"}
+                  {...register("startTime")}
+                  placeholder="hh:mm"
+                />
               </div>
+              {(errors.startDate || errors.startTime) && (
+                <p className="text-sm text-red-400">
+                  {errors.startDate?.message || errors.startTime?.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label className={"text-sm"}>End</Label>
+              <div className={`grid grid-cols-[1fr_auto] gap-2 `}>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-between disabled:cursor-not-allowed disabled:opacity-50"
+                      disabled={!startDate}
+                    >
+                      {endDate ? format(endDate, "PPP") : "Pick date"}
+                      <CalendarIcon className="w-4 h-4 opacity-60" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="p-0">
+                    <Calendar
+                      mode="single"
+                      selected={endDate}
+                      onSelect={(date) => setValue("endDate", date)}
+                      disabled={(date) => date < (startDate || new Date())}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <Input
+                  type={"time"}
+                  {...register("endTime")}
+                  placeholder="hh:mm"
+                  disabled={!startDate}
+                />
+              </div>
+              {(errors.endDate || errors.endTime) && (
+                <p className="text-sm text-red-400">
+                  {errors.endDate?.message || errors.endTime?.message}
+                </p>
+              )}
             </div>
           </div>
+
+          <div className="space-y-2">
+            <Label className={"text-sm"}>Category</Label>
+            <Controller
+              control={control}
+              name="category"
+              render={({ field }) => (
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {CATEGORIES.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id}>
+                        {cat.icon} {cat.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors.category && (
+              <p className="text-sm text-red-400">{errors.category.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label className={"text-sm"}>Location</Label>
+
+            <div className="grid grid-cols-2 gap-4">
+              <Controller
+                control={control}
+                name="state"
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onValueChange={(val) => {
+                      field.onChange(val);
+                      setValue("city", "");
+                    }}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Selected State" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {indianStates.map((s) => (
+                        <SelectItem key={s.isoCode} value={s.name}>
+                          {s.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="city"
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={!selectedState}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue
+                        placeholder={
+                          selectedState ? "Selected City" : "Select State first"
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {cities.map((c) => (
+                        <SelectItem key={c.name} value={c.name}>
+                          {c.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+
+            <div className="space-y-2 mt-6">
+              <Label className={"text-sm"}>Venue Details</Label>
+
+              <Input
+                {...register("venue")}
+                placeholder="Venue link (Google Maps Link)"
+                type={"url"}
+              />
+              {errors.venue && (
+                <p className="text-sm text-red-400">{errors.venue.message}</p>
+              )}
+
+              <Input
+                {...register("address")}
+                placeholder="Full address / street /building (optional)"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Description</Label>
+            <Textarea
+              {...register("description")}
+              placeholder="Tell people about yout event..."
+              rows={4}
+            />
+            {errors.description && (
+              <p className="text-sm text-red-400">
+                {errors.description.message}
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-3">
+            <Label className={"text-sm"}>Ticket</Label>
+            <div className="flex items-center gap-6">
+              <Label className={"flex items-center gap-2"}>
+                <input
+                  type="radio"
+                  value="free"
+                  {...register("ticketType")}
+                  defaultChecked
+                />
+                Free
+              </Label>
+              <Label className={"flex items-center gap-2"}>
+                <input
+                  type="radio"
+                  value={"paid"}
+                  {...register("ticketType")}
+                />
+                Paid
+              </Label>
+            </div>
+            {ticketType === "paid" && (
+              <Input
+                type={"number"}
+                placeholder="Ticket price"
+                {...register("ticketPrice", { valueAsNumber: true })}
+              />
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label className={"text-sm"}>Capacity</Label>
+            <Input
+              type={"number"}
+              {...register("capacity", { valueAsNumber: true })}
+              placeholder="Ex: 100"
+            />
+            {errors.capacity && (
+              <p className="text-sm text-red-400">{errors.capacity.message}</p>
+            )}
+          </div>
+          <Button
+            type="Submit"
+            disabled={isLoading}
+          
+            className="w-full py-6 text-lg rounded-lg"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Creating ...
+              </>
+            ) : (
+              "Create Event"
+            )}
+          </Button>
         </form>
       </div>
 
