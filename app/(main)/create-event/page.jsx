@@ -46,8 +46,8 @@ const eventSchema = z.object({
 
   startDate: z.date({ required_error: "Start date is required" }),
   endDate: z.date({ required_error: "End date is required" }),
-  startTime: z.string().regex(timeRegex, "Start tiem must be HH:MM"),
-  endTime: z.string().regex(timeRegex, "End tiem must be HH:MM"),
+  startTime: z.string().regex(timeRegex, "Start time must be HH:MM"),
+  endTime: z.string().regex(timeRegex, "End time must be HH:MM"),
 
   locationType: z.enum(["physical", "online"]).default("physical").optional(),
   venue: z.string().url("Must be a valid URL").optional().or(z.literal("")),
