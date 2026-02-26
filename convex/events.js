@@ -30,6 +30,7 @@ export const createEvents = mutation({
   handler: async (ctx, args) => {
     try {
       const user = await ctx.runQuery(internal.users.getCurrentUser);
+      const { hasPro, ...eventData } = args;
       if (!args.hasPro && user.freeEventsCreated >= 1) {
         throw new Error(
           "Free event limit reached. Please upgrade to Pro to create more events.",
@@ -49,7 +50,7 @@ export const createEvents = mutation({
         .replace(/(^-|-$)/g, "");
 
       const eventId = await ctx.db.insert("events", {
-        ...args,
+        ...eventData,
         themeColor,
         slug: `${slug}-${Date.now()}`,
         organizerId: user._id,
@@ -64,7 +65,7 @@ export const createEvents = mutation({
 
       return eventId;
     } catch (error) {
-      throw new Error(`Failde to create events: ${error.message}`);
+      throw new Error(`Failed to create events: ${error.message}`);
     }
   },
 });

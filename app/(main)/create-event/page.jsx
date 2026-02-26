@@ -90,7 +90,7 @@ const CreateEvents = () => {
       description: "",
       locationType: "physical",
       ticketType: "free",
-      capacity: 50,
+      capacity: 0,
       themeColor: "#1c1c1c",
       category: "",
       state: "",
@@ -122,7 +122,7 @@ const CreateEvents = () => {
         return;
       }
 
-      if (currentUser?.freeEventsCreated >= 1) {
+      if (!hasPro && currentUser?.freeEventsCreated >= 1) {
         setUpgradeReason("limit");
         setShowUpgradeModal(true);
         return;
@@ -152,6 +152,7 @@ const CreateEvents = () => {
         ticketPrice: data.ticketPrice || undefined,
         coverImage: data.coverImage || undefined,
         themeColor: data.themeColor,
+        hasPro
       });
       toast.success("Event create successfully!");
       router.push("/my-events");
