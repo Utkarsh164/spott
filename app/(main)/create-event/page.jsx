@@ -90,7 +90,6 @@ const CreateEvents = () => {
       description: "",
       locationType: "physical",
       ticketType: "free",
-      capacity: 0,
       themeColor: "#1c1c1c",
       category: "",
       state: "",
