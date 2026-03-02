@@ -96,7 +96,7 @@ export const getMyEvents = query({
 export const deleteEvent = mutation({
   args: { eventId: v.id("events") },
   handler: async (ctx, args) => {
-    const user = ctx.runQuery(internal.users.getCurrentUser);
+    const user =await ctx.runQuery(internal.users.getCurrentUser);
     const event = await ctx.db.get(args.eventId);
     if (!event) {
       throw new Error("Event not found");
@@ -110,7 +110,7 @@ export const deleteEvent = mutation({
     //Delete all registrations for this events
     const registrations = await ctx.db
       .query("registrations")
-      .withIndex("by_event", q.eq("eventId", args.eventId))
+      .withIndex("by_event",(q)=> q.eq("eventId", args.eventId))
       .collect();
     for (const registration of registrations) {
       await ctx.db.delete(registration._id);

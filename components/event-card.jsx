@@ -158,8 +158,9 @@ const EventCard = ({
 
             {onDelete && (
               <Button
-                varient="outline"
+                variant="outline"
                 size="sm"
+                className="gap-2 text-red-500 hover:text-red-600 hover:bg-red-50"
                 onClick={(e) => {
                   e.stopPropagation();
                   onDelete(event._id);
