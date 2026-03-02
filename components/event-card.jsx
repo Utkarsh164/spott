@@ -144,18 +144,18 @@ const EventCard = ({
                 onClick?.(e);
               }}
             >
-              View
+              {action === "event" ? (
+                <>
+                  <Eye className="w-4 h-4" />
+                  View
+                </>
+              ) : (
+                <>
+                  <QrCode className="w-4 h-4" /> Show Ticket
+                </>
+              )}
             </Button>
-            {action === "event" ? (
-              <>
-                <Eye className="w-4 h-4" />
-                View
-              </>
-            ) : (
-              <>
-                <QrCode className="w-4 h-4" /> Show Ticket
-              </>
-            )}
+
             {onDelete && (
               <Button
                 varient="outline"

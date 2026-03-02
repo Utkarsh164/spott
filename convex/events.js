@@ -81,7 +81,7 @@ export const getEventBySlug = query({
   },
 });
 
-export const getEventByOrganizer = query({
+export const getMyEvents = query({
   handler: async (ctx) => {
     const user = await ctx.runQuery(internal.users.getCurrentUser);
     const event = await ctx.db
