@@ -2,6 +2,7 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { success } from "zod";
+import { get } from "lodash";
 
 const generateQRCode = () => {
   return `EVT-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
@@ -107,6 +108,27 @@ export const cancelRegistration = mutation({
       });
     }
     return { success: true };
+  },
+});
+
+export const getEventRegistrations = query({
+  args: { eventId: v.id("events") },
+  handler: async (ctx, args) => {
+    const user = await ctx.runQuery(internal.users.getCurrentUser);
+    const event = await ctx.db.get(args.eventId);
+    if (!event) {
+      throw new Error("Event not found");
+    }
+    if (event.organizerId !== user._id) {
+      throw new Error("You are not authorized to view registrations");
+    }
+
+    const registrations = ctx.db
+      .query("registrations")
+      .withIndex("by_event", (q) => q.eq("eventId", args.eventId))
+      .collect();
+
+    return registrations;
   },
 });
 
