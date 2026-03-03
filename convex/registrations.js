@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { internal } from "./_generated/api";
+import { success } from "zod";
 
 const generateQRCode = () => {
   return `EVT-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
@@ -105,6 +106,51 @@ export const cancelRegistration = mutation({
         registrationCount: event.registrationCount - 1,
       });
     }
-    return { success: true }
+    return { success: true };
+  },
+});
+
+export const checkInAttendee = mutation({
+  args: { qrCode: v.string() },
+  handler: async (ctx, args) => {
+    const user = await ctx.runQuery(internal.users.getCurrentUser);
+    const registation = await ctx.db
+      .query("registrations")
+      .withIndex("by_qr_code", (q) => q.eq("qrCode", args.qrCode))
+      .unique();
+    if (!registation) {
+      throw new Error("Invalid QR code");
+    }
+    const event = await ctx.db.get(registation.eventId);
+    if (!event) {
+      throw new Error("Event not found");
+    }
+
+    if (event.organizerId !== user._id) {
+      throw new Error("You are not authorized t check in attendees");
+    }
+
+    if (registation.checkedIn) {
+      return {
+        success: false,
+        message: "Already checked in",
+        registation,
+      };
+    }
+
+    await ctx.db.patch(registation._id, {
+      checkedIn: true,
+      checkedInAt: Date.now(),
+    });
+
+    return {
+      success: true,
+      message: "Check-in successful",
+      registation: {
+        ...registation,
+        checkedIn: true,
+        checkedInAt: Date.now(),
+      },
+    };
   },
 });
