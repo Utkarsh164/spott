@@ -3,6 +3,8 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api } from "@/convex/_generated/api";
 import { useConvexQuery } from "@/hooks/use-convex-query";
 import { getCategoryIcon, getCategoryLabel } from "@/lib/data";
@@ -16,6 +18,7 @@ import {
   Loader2,
   MapPin,
   QrCode,
+  Search,
   TrendingUp,
   User,
 } from "lucide-react";
@@ -204,6 +207,37 @@ const EventDashboard = () => {
             </CardContent>
           </Card>
         </div>
+        <h2 className="text-2xl font-bold mb-4">Attendee Management</h2>
+
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className={"mb-4"}>
+            <TabsTrigger value="all">
+              All ({stats.totalRegistrations})
+            </TabsTrigger>
+            <TabsTrigger value="checked-in">
+              Checked In ({stats.checkedInCount})
+            </TabsTrigger>
+            <TabsTrigger value="pending">
+              Pending ({stats.pendingCount})
+            </TabsTrigger>
+          </TabsList>
+
+          <div className="flex gap-3 mmb-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by name, email, or QR code..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          </div>
+
+          <TabsContent value={activeTab} className={"space-y-3 mt-0"}>
+            {activeTab}
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

@@ -38,11 +38,13 @@ const MyTicketPage = () => {
   const now = Date.now();
   const upcomigTickets = registration?.filter(
     (reg) =>
-      reg.event && reg.event.startDate >= now && reg.status === "confirmed",
+      reg.event &&
+      (reg.event.startDate >= now ||
+        (reg.event.startDate <= now && reg.event.endDate >= now)) &&
+      reg.status === "confirmed",
   );
   const pastTicket = registration?.filter(
-    (reg) =>
-      reg.event && reg.event.startDate < now && reg.status === "cancelled",
+    (reg) => reg.event && reg.event.endDate < now && reg.status === "cancelled",
   );
   const handleCancelRegistration = async (registrationId) => {
     if (!window.confirm("Are you sure you want to cancel this registration?")) {
