@@ -3,7 +3,7 @@ import { query } from "./_generated/server";
 import { internal } from "./_generated/api";
 
 export const getEventDashboard = query({
-  argsF: { eventId: v.id("events") },
+  args: { eventId: v.id("events") },
   handler: async (ctx, args) => {
     const user = await ctx.runQuery(internal.users.getCurrentUser);
 
@@ -43,11 +43,11 @@ export const getEventDashboard = query({
         ? Math.round((checkedInCount / totalRegistrations) * 100)
         : 0;
 
-    const now = new Date.now();
+    const now = Date.now();
     const timeUntilEvent = event.startDate - now;
     const hoursUntilEvent = Math.max(
       0,
-      Math.floor((timeUntilEvent / 1000) * 60 * 60),
+      Math.floor(timeUntilEvent / (1000 * 60 * 60)),
     );
 
     const today = new Date().setHours(0, 0, 0, 0);
