@@ -14,6 +14,7 @@ import {
   Calendar,
   CheckCircle,
   Clock,
+  Download,
   Eye,
   Loader2,
   MapPin,
@@ -25,6 +26,8 @@ import {
 import Image from "next/image";
 import { notFound, useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { toast } from "sonner";
+import { AttendeeCard } from "./_components/attendeeCard";
 
 const EventDashboard = () => {
   const params = useParams();
@@ -42,6 +45,61 @@ const EventDashboard = () => {
   const { data: registrations, isLoading: loadingRegistrations } =
     useConvexQuery(api.registrations.getEventRegistrations, { eventId });
 
+  const handleExportCSV = () => {
+    if (!registrations || registrations.length === 0) {
+      toast.error("No registrations to export");
+      return;
+    }
+
+    // const csvContent = [
+    //   [
+    //     "Name",
+    //     "Email",
+    //     "Registered At",
+    //     "Checked In",
+    //     "Checked In At",
+    //     "QR Code",
+    //   ],
+    //   ...registrations.map((reg) => [
+    //     reg.attendeeName,
+    //     reg.attendeeEmail,
+    //     new Date(reg.registeredAt).toLocaleString(),
+    //     reg.checkedIn ? "Yes" : "No",
+    //     reg.checkedInAt ? new Date(reg.checkedIn).toLocaleString() : "-",
+    //     reg.qrCode,
+    //   ]),
+    // ]
+    //   .map((row) => row.join(","))
+    //   .join("\n");
+    const csvContent = [
+      [
+        "Name",
+        "Email",
+        "Registered At",
+        "Checked In",
+        "Checked In At",
+        "QR Code",
+      ],
+      ...registrations.map((reg) => [
+        reg.attendeeName,
+        reg.attendeeEmail,
+        new Date(reg.registeredAt).toLocaleString(),
+        reg.checkedIn ? "Yes" : "No",
+        reg.checkedInAt ? new Date(reg.checkedInAt).toLocaleString() : "-",
+        reg.qrCode,
+      ]),
+    ]
+      .map((row) => row.map((value) => `"${value}"`).join(","))
+      .join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${dashboardData?.event.title || "event"}_registrations.csv`;
+    a.click();
+    toast.success("CSV ecported successfully");
+  };
+
   if (isLoading || loadingRegistrations) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -55,9 +113,9 @@ const EventDashboard = () => {
   const { event, stats } = dashboardData;
   const filteredRegistrations = registrations.filter((reg) => {
     const matchesSearch =
-      reg.attendeeName.toLowerCase().include(searchQuery.toLowerCase()) ||
-      reg.attendeeEmail.toLowerCase().include(searchQuery.toLowerCase()) ||
-      reg.qrCode.toLowerCase().include(searchQuery.toLowerCase());
+      reg.attendeeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      reg.attendeeEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      reg.qrCode.toLowerCase().includes(searchQuery.toLowerCase());
 
     if (activeTab === "all") return matchesSearch && reg.status === "confirmed";
     if (activeTab === "checked-in")
@@ -164,8 +222,8 @@ const EventDashboard = () => {
           {event.ticketType === "paid" ? (
             <Card className={"py-0"}>
               <CardContent className={"p-6 flex items-center gap-3"}>
-                <div className="p-3 bg-blue-100 rounded-lg">
-                  <TrendingUp className="w-6 h-6 text-blue-600" />
+                <div className="p-3 bg-red-100 rounded-lg">
+                  <TrendingUp className="w-6 h-6 text-red-600" />
                 </div>
                 <div>
                   <p className="text-2xl font-bold">₹{stats.totalRevenue}</p>
@@ -189,8 +247,8 @@ const EventDashboard = () => {
 
           <Card className={"py-0"}>
             <CardContent className={"p-6 flex items-center gap-3"}>
-              <div className="p-3 bg-amber-100 rounded-lg">
-                <Clock className="w-6 h-6 text-amber-600" />
+              <div className="p-3 bg-pink-100 rounded-lg">
+                <Clock className="w-6 h-6 text-pink-600" />
               </div>
               <div>
                 <p className="text-2xl font-bold">
@@ -232,10 +290,27 @@ const EventDashboard = () => {
                 className="pl-10"
               />
             </div>
+
+            <Button
+              variant="outline"
+              onClick={handleExportCSV}
+              className="gap-2"
+            >
+              <Download className="w-4 h-4" /> Export CSV
+            </Button>
           </div>
 
           <TabsContent value={activeTab} className={"space-y-3 mt-0"}>
-            {activeTab}
+            {filteredRegistrations && filteredRegistrations.length > 0 ? (
+              filteredRegistrations.map((reg)=>(
+                console.log(reg),
+                <AttendeeCard key={reg._id} registration={reg} />
+              ))
+            ) : (
+              <div className="text-center py-12 text-muted-foreground">
+                No attendees found
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       </div>
