@@ -35,7 +35,7 @@ const EventPage = () => {
   return (
     <div
       style={{ background: event.themeColor || "#1c1c1c" }}
-      className="min-h-screen max-w-screen py-8 -mt-6 lg:-mx-5"
+      className="min-h-screen max-w-screen py-8 -mt-6 md:-mt-16 lg:-mx-5"
     >
       <div className="max-w-7xl mx-auto px-8">
         <div className="mb-8">
@@ -70,7 +70,7 @@ const EventPage = () => {
           </div>
         )}
 
-        <div className="grid lg:grid-col-[1fr_380px] gap-8">
+        <div className="grid lg:grid-cols-[1fr_380px] gap-8">
           <div className="space-y-8"></div>
           <div className="lg:sticky lg:top-24 h-fit"></div>
         </div>
