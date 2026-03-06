@@ -14,14 +14,12 @@ import { useConvexMutation, useConvexQuery } from "@/hooks/use-convex-query";
 import { format } from "date-fns";
 import { Calendar, Loader2, MapPin, Ticket } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, {useState } from "react";
 import QRCode from "react-qr-code";
 import { toast } from "sonner";
 
 const MyTicketPage = () => {
   const [selectedTicket, setSelectedTicket] = useState(null);
-  const router = useRouter();
   const { data: registration, isLoading } = useConvexQuery(
     api.registrations.getMyRegistrations,
   );
@@ -129,7 +127,7 @@ const MyTicketPage = () => {
             </DialogHeader>
             <div className="space-y-4">
               <div className="text-center">
-                <p className="fonst-semibold mb-1">
+                <p className="font-semibold mb-1">
                   {selectedTicket.attendeeName}
                 </p>
                 <p className="text-sm text-muted-foreground mb-4">
@@ -137,7 +135,7 @@ const MyTicketPage = () => {
                 </p>
               </div>
               <div className="flex justify-center p-6 bg-white rounded-lg">
-                <QRCode value={selectedTicket.qeCode} size={200} level="H" />
+                <QRCode value={selectedTicket.qrCode} size={200} level="H" />
               </div>
 
               <div className="text-center">
