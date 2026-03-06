@@ -28,6 +28,7 @@ import { notFound, useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
 import { AttendeeCard } from "./_components/attendeeCard";
+import QRScannerModal from "./_components/qr-scanner-modal";
 
 const EventDashboard = () => {
   const params = useParams();
@@ -302,10 +303,11 @@ const EventDashboard = () => {
 
           <TabsContent value={activeTab} className={"space-y-3 mt-0"}>
             {filteredRegistrations && filteredRegistrations.length > 0 ? (
-              filteredRegistrations.map((reg)=>(
-                console.log(reg),
-                <AttendeeCard key={reg._id} registration={reg} />
-              ))
+              filteredRegistrations.map(
+                (reg) => (
+                  (<AttendeeCard key={reg._id} registration={reg} />)
+                ),
+              )
             ) : (
               <div className="text-center py-12 text-muted-foreground">
                 No attendees found
@@ -314,6 +316,12 @@ const EventDashboard = () => {
           </TabsContent>
         </Tabs>
       </div>
+      {showQRScanner && (
+        <QRScannerModal
+          isOpen={showQRScanner}
+          onClose={() => setShowQRScanner(false)}
+        />
+      )}
     </div>
   );
 };
