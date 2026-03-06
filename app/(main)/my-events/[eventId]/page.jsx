@@ -122,7 +122,7 @@ const EventDashboard = () => {
     if (activeTab === "checked-in")
       return matchesSearch && reg.checkedIn && reg.status === "confirmed";
     if (activeTab === "pending")
-      return matchesSearch && reg.checkedIn && reg.status === "confirmed";
+      return matchesSearch && !reg.checkedIn && reg.status === "confirmed";
 
     return matchesSearch;
   });
