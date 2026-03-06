@@ -64,7 +64,7 @@ const Header = () => {
             )}
 
             <Button variant={"ghost"} size="sm" asChild className={"mr-2"}>
-              <Link href="explore">Explore</Link>
+              <Link href="/explore">Explore</Link>
             </Button>
             <Authenticated>
               <Button size="sm" asChild className="flex gap-2 mr-4">
