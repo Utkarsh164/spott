@@ -58,7 +58,7 @@ const MyEvents = () => {
               create your first event and start managing attendees
             </p>
             <Button asChild className="gap-2">
-              <Link href={"/explore"}>
+              <Link href={"/create-event"}>
                 <Plus className="w-4 h-4" /> Create Your First Event
               </Link>
             </Button>
