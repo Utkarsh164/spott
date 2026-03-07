@@ -22,6 +22,8 @@ import {
 import Image from "next/image";
 import { notFound, useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
+import RegisterModal from "./_components/register-modal";
+import { toast } from "sonner";
 
 const EventPage = () => {
   const params = useParams();
@@ -37,23 +39,23 @@ const EventPage = () => {
   );
 
   const handleShare = async () => {
-  const shareData = {
-    title: event.title,
-    text: event.description,
-    url: window.location.href,
-  };
+    const shareData = {
+      title: event.title,
+      text: event.description,
+      url: window.location.href,
+    };
 
-  try {
-    if (navigator.share) {
-      await navigator.share(shareData);
-    } else {
-      await navigator.clipboard.writeText(shareData.url);
-      toast.success("Link copied to clipboard!");
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(shareData.url);
+        toast.success("Link copied to clipboard!");
+      }
+    } catch (error) {
+      console.error("Share failed:", error);
     }
-  } catch (error) {
-    console.error("Share failed:", error);
-  }
-};
+  };
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -212,7 +214,13 @@ const EventPage = () => {
                 <Separator />
 
                 <div className="flex flex-col gap-4">
-                  <Button className="w-full">
+                  <Button
+                    className="w-full"
+                    onClick={() => {
+                      //setShowRegisterModal(true)}
+                      return toast.success("Work in progeress!");
+                    }}
+                  >
                     <Ticket className="w-4 h-4" />{" "}
                     <span>Register for Event</span>
                   </Button>
@@ -230,6 +238,13 @@ const EventPage = () => {
           </div>
         </div>
       </div>
+      {showRegisterModal && (
+        <RegisterModal
+          open={showRegisterModal}
+          onClose={() => setShowRegisterModal(false)}
+          event={event}
+        />
+      )}
     </div>
   );
 };
