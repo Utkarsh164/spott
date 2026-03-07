@@ -82,7 +82,6 @@ const OnboardingModal = ({ isOpen, onClose, onComplete }) => {
       onComplete();
     } catch (error) {
       toast.error("Failed to complete onboarding");
-      console.log(error);
     }
   };
   const handleNext = () => {

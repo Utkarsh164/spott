@@ -107,7 +107,6 @@ const CreateEvents = () => {
     return d;
   };
   const onSubmit = async (data) => {
-    console.log(data);
 
     try {
       const start = combinedDateTime(data.startDate, data.startTime);
