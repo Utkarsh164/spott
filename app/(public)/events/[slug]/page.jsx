@@ -217,9 +217,7 @@ const EventPage = () => {
                 <div className="flex flex-col gap-4">
                   <Button
                     className="w-full"
-                    onClick={() => {toast.success("Work In Progress")}
-
-                    }
+                    onClick={() => setShowRegisterModal(true)}
                   >
                     <Ticket className="w-4 h-4" />{" "}
                     <span>Register for Event</span>
