@@ -30,7 +30,7 @@ const EventPage = () => {
   const router = useRouter();
   const { user } = useUser();
   const [showRegisterModal, setShowRegisterModal] = useState(false);
-  
+
   const { data: event, isLoading } = useConvexQuery(api.events.getEventBySlug, {
     slug: params.slug,
   });
@@ -174,7 +174,7 @@ const EventPage = () => {
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Price</p>
                   <p className="text-3xl font-bold">
-                    {event.ticketType === "Free"
+                    {event.ticketType === "free"
                       ? "Free"
                       : `₹${event.ticketPrice}`}
                   </p>
