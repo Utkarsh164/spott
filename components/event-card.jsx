@@ -8,7 +8,6 @@ import {
   Eye,
   MapPin,
   QrCode,
-  Trash,
   Trash2,
   Users,
   X,

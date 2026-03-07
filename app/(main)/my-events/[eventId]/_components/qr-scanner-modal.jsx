@@ -6,7 +6,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Loader2, QrCode } from "lucide-react";
 import { useConvexMutation } from "@/hooks/use-convex-query";
