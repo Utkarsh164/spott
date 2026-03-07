@@ -52,16 +52,16 @@ export const getCurrentUser = query({
       return null;
     }
 
-    if (!user) {
-      return null;
-    }
-
     const user = await ctx.db
       .query("users")
       .withIndex("by_token", (q) =>
         q.eq("tokenIdentifier", identity.tokenIdentifier),
       )
       .unique();
+
+    if (!user) {
+      return null;
+    }
 
     return user;
   },
