@@ -23,7 +23,6 @@ import Image from "next/image";
 import { notFound, useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import RegisterModal from "./_components/register-modal";
-import { toast } from "sonner";
 
 const EventPage = () => {
   const params = useParams();
@@ -216,10 +215,9 @@ const EventPage = () => {
                 <div className="flex flex-col gap-4">
                   <Button
                     className="w-full"
-                    onClick={() => {
-                      //setShowRegisterModal(true)}
-                      return toast.success("Work in progeress!");
-                    }}
+                    onClick={() => {setShowRegisterModal(true)}
+
+                    }
                   >
                     <Ticket className="w-4 h-4" />{" "}
                     <span>Register for Event</span>
