@@ -11,7 +11,6 @@ import { useUser } from "@clerk/nextjs";
 import { format } from "date-fns";
 import {
   Calendar,
-  Circle,
   Clock,
   ExternalLink,
   Loader2,
@@ -36,6 +35,25 @@ const EventPage = () => {
     api.registrations.checkRegistration,
     event?._id ? { eventId: event._id } : "skip",
   );
+
+  const handleShare = async () => {
+  const shareData = {
+    title: event.title,
+    text: event.description,
+    url: window.location.href,
+  };
+
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+    } else {
+      await navigator.clipboard.writeText(shareData.url);
+      toast.success("Link copied to clipboard!");
+    }
+  } catch (error) {
+    console.error("Share failed:", error);
+  }
+};
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -198,8 +216,13 @@ const EventPage = () => {
                     <Ticket className="w-4 h-4" />{" "}
                     <span>Register for Event</span>
                   </Button>
-                  <Button variant="outline" className="w-full">
-                    <Share2 className="w-4 h-4" /> <span>Share Event</span>
+                  <Button
+                    variant="outline"
+                    className="w-full gap-2"
+                    onClick={handleShare}
+                  >
+                    <Share2 className="w-4 h-4" />
+                    Share Event
                   </Button>
                 </div>
               </CardContent>
