@@ -25,7 +25,7 @@ export default function Home() {
               events memorable. Joint our community today.
             </p>
             <Link href="/explore">
-              <Button size="xl" className={"rounded-full p-2"}>
+              <Button size="xl" className={"rounded-full p-3"}>
                 Get Started
               </Button>
             </Link>
