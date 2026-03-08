@@ -52,11 +52,14 @@ export const checkRegistration = query({
   args: { eventId: v.id("events") },
   handler: async (ctx, args) => {
     const user = await ctx.runQuery(internal.users.getCurrentUser);
+    if(!user){
+      return null;
+    }
 
     const registration = await ctx.db
       .query("registrations")
       .withIndex("by_event_user", (q) =>
-        q.eq("eventId", args.eventId).eq("userId", user?.id),
+        q.eq("eventId", args.eventId).eq("userId", user?._id),
       )
       .unique();
 

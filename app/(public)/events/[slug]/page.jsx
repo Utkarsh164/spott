@@ -230,7 +230,7 @@ const EventPage = () => {
                 <div className="flex flex-col gap-4">
                   {registration ? (
                     <div className="space-y-3">
-                      <div className="flex items-center gap-2 text-green-600 bg-green-50 p-3 rounded-lg">
+                      <div className="flex items-center justify-center gap-2 text-green-600 bg-green-50 p-3 rounded-lg">
                         <CheckCircle className="w-5 h-5" />
                         <span className="font-medium">
                           You&apos;re registered!
