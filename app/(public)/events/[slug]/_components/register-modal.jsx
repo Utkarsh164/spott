@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
-import { CheckCircle, Ticket } from "lucide-react";
+import { CheckCircle, Loader2, Ticket } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -153,7 +153,10 @@ const RegisterModal = ({ open, onClose, event }) => {
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  "Registering..."
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Registering...
+                  </>
                 ) : (
                   <>
                     <Ticket className="w-4 h-4" />
