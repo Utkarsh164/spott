@@ -35,7 +35,29 @@ export default function RootLayout({ children }) {
                 </div>
                 <div className="relative z-10 min-h-[70vh]">{children}</div>
                 <footer className="border-t border-gray-800/50 py-8 px-6 max-w-7xl mx-auto">
-                  <div className="text-sm text-gray-400">Made by Utkarsh</div>
+                  <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-400">
+                    <p>
+                      © {new Date().getFullYear()} Utkarsh. All rights reserved.
+                    </p>
+
+                    <div className="flex items-center gap-4">
+                      <a
+                        href="https://github.com/Utkarsh164"
+                        target="_blank"
+                        className="hover:text-white transition"
+                      >
+                        GitHub
+                      </a>
+
+                      <a
+                        href="https://github.com/Utkarsh164/spott"
+                        target="_blank"
+                        className="hover:text-white transition"
+                      >
+                        Repo
+                      </a>
+                    </div>
+                  </div>
                 </footer>
                 <Toaster richColors />
               </main>
