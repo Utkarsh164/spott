@@ -39,8 +39,6 @@ const DynamicExplorePage = () => {
         : "skip",
   );
 
-  useEffect(()=>{console.log("we were here")})
-
   const handleEventClick = (eventSlug) => {
     router.push(`/events/${eventSlug}`);
   };
