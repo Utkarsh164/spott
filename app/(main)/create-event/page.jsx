@@ -202,7 +202,6 @@ const CreateEvents = () => {
             </p>
           )}
         </div>
-        {/* AI Event Creator */}
       </div>
 
       <div className="max-w-6xl mx-auto grid md:grid-cols-[320px_1fr] gap-10">
@@ -280,7 +279,7 @@ const CreateEvents = () => {
               {...register("title")}
               placeholder="Event Name"
               className={
-                "text-3xl font-semibold bg-transparent border-none focus-visible:ring-0"
+                "font-semibold bg-transparent border-none focus-visible:ring-0"
               }
             />
             {errors.title && (
