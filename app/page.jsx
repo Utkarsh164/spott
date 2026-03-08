@@ -8,11 +8,11 @@ export default function Home() {
       <section className="pb-16 relative overflow-hidden">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center relative z-10">
           {/* left */}
-          <div className="text-center sm:text-left">
+          <div className="text-center lg:text-left flex flex-col items-center lg:items-start">
             <span className="text-gray-500 font-light tracking-wide mb-6">
               Spott<span className="text-purple-400">*</span>
             </span>
-            <h1 className="text-5xl sm:text-xl md:text-7xl font-bold mb-6 leading-[0.95] tracking-tight">
+            <h1 className="text-5xl lg:text-xl md:text-7xl font-bold mb-6 leading-[0.95] tracking-tight">
               Discover &<br />
               create amazing
               <br />
