@@ -11,6 +11,7 @@ import { useUser } from "@clerk/nextjs";
 import { format } from "date-fns";
 import {
   Calendar,
+  CheckCircle,
   Clock,
   ExternalLink,
   Loader2,
@@ -67,6 +68,18 @@ const EventPage = () => {
   if (!event) {
     notFound();
   }
+
+   const handleRegister = () => {
+    if (!user) {
+      toast.error("Please sign in to register");
+      return;
+    }
+    setShowRegisterModal(true);
+  };
+
+  const isEventFull = event.registrationCount >= event.capacity;
+  const isEventPast = event.endDate < Date.now();
+  // const isOrganizer = user?.id === event.organizerId;
   return (
     <div
       style={{ background: event.themeColor || "#1c1c1c" }}
@@ -215,13 +228,47 @@ const EventPage = () => {
                 <Separator />
 
                 <div className="flex flex-col gap-4">
-                  <Button
-                    className="w-full"
-                    onClick={() => setShowRegisterModal(true)}
-                  >
-                    <Ticket className="w-4 h-4" />{" "}
-                    <span>Register for Event</span>
-                  </Button>
+                  {registration ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 text-green-600 bg-green-50 p-3 rounded-lg">
+                        <CheckCircle className="w-5 h-5" />
+                        <span className="font-medium">
+                          You&apos;re registered!
+                        </span>
+                      </div>
+                      <Button
+                        className="w-full gap-2"
+                        onClick={() => router.push("/my-tickets")}
+                      >
+                        <Ticket className="w-4 h-4" />
+                        View Ticket
+                      </Button>
+                    </div>
+                  ) : isEventPast ? (
+                    <Button className="w-full" disabled>
+                      Event Ended
+                    </Button>
+                  ) : isEventFull ? (
+                    <Button className="w-full" disabled>
+                      Event Full
+                    </Button>
+                  ) 
+                  // : isOrganizer ? (
+                  //   <Button
+                  //     className="w-full"
+                  //     onClick={() =>
+                  //       router.push(`/events/${event.slug}/manage`)
+                  //     }
+                  //   >
+                  //     Manage Event
+                  //   </Button>
+                  // )
+                   :(
+                    <Button className="w-full gap-2" onClick={handleRegister}>
+                      <Ticket className="w-4 h-4" />
+                      Register for Event
+                    </Button>
+                  )}
                   <Button
                     variant="outline"
                     className="w-full gap-2"
