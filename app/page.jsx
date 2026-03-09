@@ -12,7 +12,7 @@ export default function Home() {
             <span className="text-gray-500 font-light tracking-wide mb-6">
               Spott<span className="text-purple-400">*</span>
             </span>
-            <h1 className="text-5xl lg:text-xl md:text-7xl font-bold mb-6 leading-[0.95] tracking-tight">
+            <h1 className="text-5xl  md:text-7xl font-bold mb-6 leading-[0.95] tracking-tight">
               Discover &<br />
               create amazing
               <br />
