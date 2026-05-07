@@ -7,6 +7,7 @@ import {
   Calendar,
   Eye,
   MapPin,
+  Pen,
   QrCode,
   Trash2,
   Users,
@@ -106,7 +107,7 @@ const EventCard = ({
           <Badge variant="outline" className="mb-2">
             {getCategoryIcon(event.category)} {getCategoryLabel(event.category)}
           </Badge>
-          <h3 className="font-semibold text-lg line-clamp-2 group-hover:text-purple-400 transition-colors">
+          <h3 className="font-semibold text-lg line-clamp-1 group-hover:text-purple-400 transition-colors">
             {event.title}
           </h3>
         </div>
@@ -154,6 +155,19 @@ const EventCard = ({
                 </>
               )}
             </Button>
+            {
+              action==="event" &&  <Button
+                variant="outline"
+                size="sm"
+                className="gap-2 text-white hover:text-violet-600 hover:bg-violet-50"
+                onClick={(e) => {
+                  // e.stopPropagation();
+                  // onDelete(event._id);
+                }}
+              >
+                <Pen className="w-4 h-4" />
+              </Button>
+            }
 
             {onDelete && (
               <Button
